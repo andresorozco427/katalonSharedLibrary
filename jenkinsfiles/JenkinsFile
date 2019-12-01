@@ -1,0 +1,57 @@
+@Library('EPMSharedLibrary@feature/26970') _
+
+import co.com.epm.constantes.ConstantesKatalon
+
+node {
+    currentBuild.displayName = "Katalon-Mercurio"
+    currentBuild.description = "Pruebas en Katalon de Mercurio"
+
+    properties([
+        [$class: 'hudson.plugins.buildblocker.BuildBlockerProperty', blockLevel: 'GLOBAL', blockingJobs: '''.*PruebasAutomaticas.*''', scanQueueFor: 'DISABLED', useBuildBlocker: true],
+        [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5']],
+        disableConcurrentBuilds()
+    ])
+
+    def urlRepositorio = "https://jehinerrodriguez@dev.azure.com/jehinerrodriguez/DevOpsEPM/_git/Mercurio"
+    def rama = "feature/21206"
+    def katalonTestSuite = "Radicacion documento externo con firma respectiva/Radicacion documento con su respectiva firma"
+    def katalonTestCollection = ""
+    def aplicacion = "Mercurio"
+    def destinatariosNotificacionEmail = "andresorozco427@gmail.com"
+    def perfilEjecucion = "MERCURIO UAT"
+
+    scripts.UtilsJenkins utilsJenkins = new scripts.UtilsJenkins()
+    def CUSTOM_WORKSPACE = utilsJenkins.giveMeAWorkspace(aplicacion, true)
+    def rutaProyecto = "${CUSTOM_WORKSPACE}" + "\\" + "Mercurio\\Mercurio.prj"
+    def rutaAbsolutaReporteKatalon = "${CUSTOM_WORKSPACE}" + "\\" + "Reportes-Katalon" + "\\${BUILD_NUMBER}"
+
+    stage ("Descarga repositorio"){
+        dir(CUSTOM_WORKSPACE){
+            git branch: rama, url: urlRepositorio
+        }
+    }
+
+    stage ("Prueba Katalon"){
+        try{
+            katalonEpm(
+                rutaProyecto: rutaProyecto, 
+                testCollection: katalonTestCollection
+                pathReporte: rutaAbsolutaReporteKatalon, 
+                perfil: perfilEjecucion,
+                reintentar: false,
+                cantidadReintentos: 0
+            )
+            //si las pruebas fueron exitosas, se borra la carpeta del reporte respectivo, para evitar que se llene el workspace de archivos
+            dir (rutaAbsolutaReporteKatalon) {
+                deleteDir()
+            }
+        }catch(Exception e){
+            throw e
+        }finally{
+            dir (rutaAbsolutaReporteKatalon) {
+                    utilsJenkins.notifyKatalonTest(aplicacion, destinatariosNotificacionEmail);
+            }
+            utilsJenkins.unmountVirtual(CUSTOM_WORKSPACE)
+        }
+    }
+}
