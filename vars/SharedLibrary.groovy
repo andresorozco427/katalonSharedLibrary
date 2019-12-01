@@ -26,3 +26,5 @@ def call(Map params = [:]) {
 
     bat scriptKatalon
 }
+
+def checkout_from_reference()
