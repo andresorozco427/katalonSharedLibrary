@@ -1,4 +1,4 @@
-@Library('EPMSharedLibrary@feature/26970') _
+@Library('SharedLibraryKatalon') _
 
 import co.com.epm.constantes.ConstantesKatalon
 
@@ -8,12 +8,12 @@ node {
 
     properties([
         [$class: 'hudson.plugins.buildblocker.BuildBlockerProperty', blockLevel: 'GLOBAL', blockingJobs: '''.*PruebasAutomaticas.*''', scanQueueFor: 'DISABLED', useBuildBlocker: true],
-        [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5']],
+        [$class: '  ', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5']],
         disableConcurrentBuilds()
     ])
 
-    def urlRepositorio = "https://jehinerrodriguez@dev.azure.com/jehinerrodriguez/DevOpsEPM/_git/Mercurio"
-    def rama = "feature/21206"
+    def urlRepositorio = "https://github.com/andresorozco427/katalonSharedLibrary.git"
+    def rama = "master"
     def katalonTestSuite = "Radicacion documento externo con firma respectiva/Radicacion documento con su respectiva firma"
     def katalonTestCollection = ""
     def aplicacion = "Mercurio"
@@ -25,15 +25,21 @@ node {
     def rutaProyecto = "${CUSTOM_WORKSPACE}" + "\\" + "Mercurio\\Mercurio.prj"
     def rutaAbsolutaReporteKatalon = "${CUSTOM_WORKSPACE}" + "\\" + "Reportes-Katalon" + "\\${BUILD_NUMBER}"
 
-    stage ("Descarga repositorio"){
-        dir(CUSTOM_WORKSPACE){
-            git branch: rama, url: urlRepositorio
-        }
-    }
+   stage('Checkout'){			
+			echo "...............CHECKOUT..............."
+			  checkout([  
+				  	$class: 'GitSCM',
+			 	  	branches: [ [ name: '*/${rama}' ] ],
+			 	  	doGenerateSubmoduleConfigurations: false,
+			 	    extensions: [],
+                    submoduleCfg: [],
+                     url: urlRepositorio])	   
+							
+			}
 
     stage ("Prueba Katalon"){
         try{
-            katalonEpm(
+            SharedLibrary(
                 rutaProyecto: rutaProyecto, 
                 testCollection: katalonTestCollection
                 pathReporte: rutaAbsolutaReporteKatalon, 
