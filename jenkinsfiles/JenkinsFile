@@ -41,7 +41,7 @@ node {
         try{
             SharedLibrary(
                 rutaProyecto: rutaProyecto, 
-                testCollection: katalonTestCollection
+                testCollection: katalonTestCollection,
                 pathReporte: rutaAbsolutaReporteKatalon, 
                 perfil: perfilEjecucion,
                 reintentar: false,
