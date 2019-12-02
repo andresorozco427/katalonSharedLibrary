@@ -1,4 +1,4 @@
-@Library('SharedLibraryKatalon') _
+@Library('KatalonShared@master') _
 
 import co.com.epm.constantes.ConstantesKatalon
 
