@@ -1,7 +1,5 @@
 @Library('KatalonShared@master') _
 
-import co.com.epm.constantes.ConstantesKatalon
-
 node {
     currentBuild.displayName = "Katalon-Mercurio"
     currentBuild.description = "Pruebas en Katalon de Mercurio"

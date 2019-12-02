@@ -1,7 +1,5 @@
 package scripts
 
-import constantes.ConstantesJenkins
-
 def killJob (jobName, jobNumber) {
 	Jenkins.instance.getItemByFullName(jobName).getBuildByNumber(jobNumber).finish(
                         hudson.model.Result.ABORTED,
