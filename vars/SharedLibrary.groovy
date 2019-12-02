@@ -36,13 +36,11 @@ def checkout_repository(Map params = [:])
     def branche = params.branche ?: "master"
 
     echo "...............CHECKOUT..............."
-			  checkout([  
-				  	$class: 'GitSCM',
-			 	  	branches: [ [ name: '*/${branche}' ] ],
-			 	  	doGenerateSubmoduleConfigurations: false,
-			 	    extensions: [],
-                    submoduleCfg: [],
-                     url: params.urlrepositorio])	   
-							
-			}
+	 checkout([  
+	$class: 'GitSCM',
+	branches: [ [ name: '*/${branche}' ] ],
+  	doGenerateSubmoduleConfigurations: false,
+      extensions: [],
+    submoduleCfg: [],
+     url: params.urlrepositorio])	   
 }
