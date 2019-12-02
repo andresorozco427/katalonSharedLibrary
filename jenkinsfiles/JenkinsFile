@@ -10,36 +10,30 @@ node {
         disableConcurrentBuilds()
     ])
 
-    def urlRepositorio = "https://github.com/andresorozco427/katalonSharedLibrary.git"
+    def urlRepositorio = "https://github.com/andresorozco427/KatalonAgendamiento.git"
     def rama = "master"
-    def katalonTestSuite = "Radicacion documento externo con firma respectiva/Radicacion documento con su respectiva firma"
+    def katalonTestSuite = "AgendamientoCitas"
     def katalonTestCollection = ""
-    def aplicacion = "Mercurio"
+    def aplicacion = "AgendamientoCitas"
     def destinatariosNotificacionEmail = "andresorozco427@gmail.com"
-    def perfilEjecucion = "MERCURIO UAT"
 
     scripts.UtilsJenkins utilsJenkins = new scripts.UtilsJenkins()
     def CUSTOM_WORKSPACE = utilsJenkins.giveMeAWorkspace(aplicacion, true)
-    def rutaProyecto = "${CUSTOM_WORKSPACE}" + "\\" + "Mercurio\\Mercurio.prj"
+    def rutaProyecto = "${CUSTOM_WORKSPACE}" + "\\" + "\AgendamientoCitas\\AgendamientoCitas.prj"
     def rutaAbsolutaReporteKatalon = "${CUSTOM_WORKSPACE}" + "\\" + "Reportes-Katalon" + "\\${BUILD_NUMBER}"
 
    stage('Checkout'){			
-			echo "...............CHECKOUT..............."
-			  checkout([  
-				  	$class: 'GitSCM',
-			 	  	branches: [ [ name: '*/${rama}' ] ],
-			 	  	doGenerateSubmoduleConfigurations: false,
-			 	    extensions: [],
-                    submoduleCfg: [],
-                     url: urlRepositorio])	   
-							
-			}
+       SharedLibrary.checkout_repository(
+           urlrepositorio: urlRepositorio,
+           branche: rama
+       )
+   }
 
     stage ("Prueba Katalon"){
         try{
             SharedLibrary(
                 rutaProyecto: rutaProyecto, 
-                testCollection: katalonTestCollection,
+                testSuite: katalonTestSuite,
                 pathReporte: rutaAbsolutaReporteKatalon, 
                 perfil: perfilEjecucion,
                 reintentar: false,
