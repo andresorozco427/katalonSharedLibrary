@@ -19,7 +19,7 @@ node {
 
     scripts.UtilsJenkins utilsJenkins = new scripts.UtilsJenkins()
     def CUSTOM_WORKSPACE = utilsJenkins.giveMeAWorkspace(aplicacion, true)
-    def rutaProyecto = "${CUSTOM_WORKSPACE}" + "\\" + "\AgendamientoCitas\\AgendamientoCitas.prj"
+    def rutaProyecto = "${CUSTOM_WORKSPACE}" + "\\" + "AgendamientoCitas\\AgendamientoCitas.prj"
     def rutaAbsolutaReporteKatalon = "${CUSTOM_WORKSPACE}" + "\\" + "Reportes-Katalon" + "\\${BUILD_NUMBER}"
 
    stage('Checkout'){			
